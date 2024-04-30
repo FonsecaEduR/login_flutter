@@ -1,6 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatelessWidget {
+
+  final auth = FirebaseAuth.instance;
+
+  _criarUsuario(String usuario, String senha) async {
+    try{
+      await auth.createUserWithEmailAndPassword(email: usuario, password: senha);
+    } on FirebaseAuthException catch (e) {
+      print("Erro: "+e.code);
+    }
+  }
+    
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +82,7 @@ class SignupPage extends StatelessWidget {
                 child: MaterialButton(
                   minWidth: double.infinity,
                   height: 60,
-                  onPressed: () {},
+                  onPressed: () => _criarUsuario,
                   color: const Color(0xff0095FF),
                   elevation: 0,
                   shape: RoundedRectangleBorder(

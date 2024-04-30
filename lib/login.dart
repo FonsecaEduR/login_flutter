@@ -1,6 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+
 class LoginPage extends StatelessWidget {
+
+  final auth = FirebaseAuth.instance;
+  final db = FirebaseFirestore.instance;
+
+  Future<void> _criarUsuario(String usuario, String senha) async {
+    try{
+      await auth.createUserWithEmailAndPassword(email: usuario, password: senha)
+      .then((usuariocriado) => {
+        db.collection('users')
+        .add({
+          "name": "Novo Usuário",
+          "email": usuario,
+          "uid": usuariocriado.user!.uid
+        })
+      });
+    } on FirebaseAuthException catch (e) {
+      print("Erro: "+e.code);
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +110,7 @@ class LoginPage extends StatelessWidget {
                       child: MaterialButton(
                         minWidth: double.infinity,
                         height: 60,
-                        onPressed: () {},
+                        onPressed: () => _criarUsuario ("novo2@gmail.com", "123456"),
                         color: const Color(0xff0095FF),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
